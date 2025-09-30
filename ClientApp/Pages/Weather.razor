@@ -20,7 +20,10 @@ else
         <tr>
             <th>Date</th>
             <th aria-label="Temperature in Celsius">Temp. (C)</th>
-            <th aria-label="Temperature in Farenheit">Temp. (F)</th>
+            @if (FVises)
+            {
+                <th aria-label="Temperature in Farenheit">Temp. (F)</th>
+            }
             <th>Summary</th>
         </tr>
         </thead>
@@ -30,20 +33,35 @@ else
             <tr>
                 <td>@forecast.Date.ToShortDateString()</td>
                 <td>@forecast.TemperatureC</td>
-                <td>@forecast.TemperatureF</td>
+                @if (FVises)
+                {
+                    <td>@forecast.TemperatureF</td>
+                }
                 <td>@forecast.Summary</td>
             </tr>
         }
         </tbody>
     </table>
+    <button class="btn btn-primary" @onclick="ToogleF">@TextOnButton()</button>
+
 }
 
 @code {
     private WeatherForecast[]? forecasts;
 
+    private bool FVises = false;
+
     protected override async Task OnInitializedAsync()
     {
         forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+    }
+
+    private string TextOnButton()
+    {
+        if (FVises)
+            return "Skjul F";
+        else
+            return "Vis F";
     }
 
     public class WeatherForecast
@@ -55,6 +73,14 @@ else
         public string? Summary { get; set; }
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+
+    private void ToogleF()
+    {
+        if (FVises)
+            FVises = false;
+        else
+            FVises = true;
     }
 
 }
