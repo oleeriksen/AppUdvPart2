@@ -1,0 +1,24 @@
+@page "/dice"
+@using ClientApp.Logic
+<h3>DicePage</h3>
+
+<img src="@FileNameD1"/>
+<img src="@FileNameD2"/>
+<button class="btn btn-primary" @onclick="RollDices">Roll</button>
+
+@code {
+
+    Dice d1 = new(6);
+    Dice d2 = new(6);
+    
+    private string FileNameD1 => $"images/dices/dice{d1.GetEyes()}.png";
+    private string FileNameD2 => $"images/dices/dice{d2.GetEyes()}.png";
+
+
+    private void RollDices()
+    {
+        d1.Roll();
+        d2.Roll();
+    }
+
+}

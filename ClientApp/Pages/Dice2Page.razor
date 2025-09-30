@@ -1,0 +1,46 @@
+@page "/dice2"
+@using ClientApp.Logic
+<h3>DicePage</h3>
+
+<div style="text-align: center">
+    @foreach (var d in dices)
+    {
+        <img src="@FileName(d.GetEyes())" width="100px;" height="100px;"/>
+    }
+</div>
+<hr/>
+<div style="text-align: center">
+    <button class="btn btn-primary" @onclick="RemoveDice">-</button>
+    <button class="btn btn-primary" @onclick="RollDices">Roll</button>   
+    <button class="btn btn-primary" @onclick="AddDice">+</button>
+</div>
+
+@code {
+
+    List<Dice> dices = new();
+
+    protected override void OnInitialized()
+    {
+        dices.Add(new Dice(6));
+        dices.Add(new Dice(6));
+    }
+
+    private string FileName(int eyes) => $"images/dices/dice{eyes}.png";
+
+
+    private void RollDices()
+    {
+        foreach (var d in dices)
+            d.Roll();   
+    }
+
+    private void RemoveDice()
+    {
+        dices.RemoveAt(0);
+    }
+    private void AddDice()      
+    {                              
+        dices.Add(new Dice(6));         
+    }                              
+
+}
