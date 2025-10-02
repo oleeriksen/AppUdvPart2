@@ -1,0 +1,44 @@
+@page "/todo"
+@using ClientApp.Logic
+<h3>Todo (@CountMissing() mangler)</h3>
+
+<ul>
+@foreach (TodoItem todo in mTodos)
+{
+    <li><InputCheckbox @bind-Value="todo.IsDone" ></InputCheckbox>
+        @todo.Title</li>
+}
+</ul>
+<InputText @bind-Value="newTodoTitle" placeholder="Skriv en ny to-do"></InputText>
+<button class="btn btn-primary" @onclick="AddTodo">Opret</button>
+
+@code {
+    List<TodoItem> mTodos= new();
+
+    string newTodoTitle = "";
+
+    protected override void OnInitialized()
+    {
+        mTodos.Add(new TodoItem { IsDone = true, Title = "Lektier" });
+        mTodos.Add(new TodoItem { IsDone = false, Title = "flere lektier" });
+    }
+
+
+    private void AddTodo()
+    {
+        TodoItem newTd = new TodoItem { IsDone = false, Title = newTodoTitle };
+        newTodoTitle = "";
+        mTodos.Add(newTd);
+    }
+    
+    // retur: antal ikke done items i mTodos
+    private int CountMissing()
+    {
+        int result = 0;
+        foreach (TodoItem t in mTodos)
+            if (!t.IsDone)
+                result++;
+        return result;
+    }
+
+}
