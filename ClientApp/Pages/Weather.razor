@@ -52,9 +52,17 @@ else
 
     private bool FVises = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        string[] summaries = { "Koldt og blæsende", "varmt og solrigt", "stille og gråt" };
+
+        forecasts = Enumerable.Range(0, 20).Select((idx) =>
+            new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(idx)),
+                TemperatureC = Random.Shared.Next(20) + 1,
+                Summary = summaries[Random.Shared.Next(summaries.Length)]
+            }).ToArray();
     }
 
     private string TextOnButton => FVises? "Skjul F": "Vis F";
