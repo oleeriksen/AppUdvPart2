@@ -1,4 +1,4 @@
-namespace ClientApp.Logic;
+namespace ClientApp.Model;
 
 public class Item {
     public string Name { get; set; }

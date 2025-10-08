@@ -1,0 +1,82 @@
+@page "/login"
+@using Blazored.LocalStorage
+@using ClientApp.Model
+@using ClientApp.Service
+@inject ILocalStorageService localStorage
+@inject NavigationManager navManager
+<PageTitle>Log ind</PageTitle>
+
+<div class="login-page-background">
+    <div class="login-container">
+        
+        <h3>Log ind</h3>
+
+        <!-- Formular til login-->
+        <EditForm Model="@user" OnValidSubmit="OnClickLogin">
+            <DataAnnotationsValidator/>
+
+            <div class="form-floating-group">
+                <InputText id="un" class="form-control" @bind-Value="user.Name" placeholder="Username"/>
+                <label for="un">Username</label>
+            </div>
+
+            <div class="form-floating-group">
+                <InputText id="pwd"
+                           type="@PasswordType"
+                           class="form-control"
+                           @bind-Value="user.Password"
+                           placeholder="Password"/>
+                <label for="pwd">Adgangskode</label>
+                <i class="bi bi-eye" @onclick="ToggleAdgangskodeVisibility">
+                    
+                </i>
+            </div>
+
+            <div style="text-align: center">
+                <button type="submit" class="btn btn-primary">Log ind</button>
+            </div>
+        </EditForm>
+
+        @if (!string.IsNullOrEmpty(errorText))
+        {
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <span class="error-text">@errorText</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    User user = new();
+    
+    //Bruges til at vise errortext hvis relevant - ellers er den tom
+    string errorText = "";
+    //Bruges til at skjule visningen af adgangskoden i vores ToggleAdgangskodeVisibility 
+    bool visPassword = false;
+
+    string PasswordType => visPassword ? "text" : "password";
+    
+    //Skifter mellem visning og skjul af adgangskodefeltet
+    void ToggleAdgangskodeVisibility()
+    {
+        visPassword = !visPassword;
+    }
+    
+    private async Task OnClickLogin()
+    {
+        UserRepo userRepo = new();
+        User? userObject = await userRepo.ValidLogin(user.Name, user.Password);
+        
+        
+        if (userObject == null)
+        {
+            errorText = "Forkert email eller adgangskode, prøv igen";
+        }
+        else
+        {
+            await localStorage.SetItemAsync("user", userObject);
+            navManager.NavigateTo("/", forceLoad: true); 
+        }
+    }
+}
