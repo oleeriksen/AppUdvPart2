@@ -1,0 +1,34 @@
+@page "/search"
+@inject HttpClient Http
+
+<h3>SearchPage</h3>
+
+@if (viewedWords != null)
+{
+    <ul>
+        @foreach (var w in viewedWords)
+        {
+            <li>@w</li>
+        }
+    </ul>
+}
+else
+{
+    <p>waiting for words to be loaded...</p>
+}
+@code {
+    string[]? viewedWords; // the words visible on the page
+    
+    protected override async Task OnInitializedAsync()
+    {
+        string[] wordsFromFile = await LoadAllWords();
+        
+        viewedWords = wordsFromFile.Take(100).ToArray();
+    }
+
+    private async Task<string[]> LoadAllWords()
+    {
+        string content = await Http.GetStringAsync("sample-data/words.txt");
+        return content.Split("\n");
+    }
+}

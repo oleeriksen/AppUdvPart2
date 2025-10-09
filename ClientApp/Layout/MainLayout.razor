@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using ClientApp.Model
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager navManager
+@inherits LayoutComponentBase
 
 <div class="page">
     
@@ -8,8 +11,16 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+            @if (loggedIn != null)
+            {
+                <div style="font-weight: bold">@LoggedInText</div>
+                <scan><i class="bi bi-box-arrow-right fs-4" @onclick="Logout" ></i></scan>
+            }
+            else
+            {
+                <i class="bi bi-box-arrow-in-right fs-4" @onclick="Login"></i>
+            }
+        </div>  
 
         <article class="content px-4">
             @Body
@@ -18,3 +29,25 @@
     
     
 </div>
+@code
+{
+    User? loggedIn;
+
+    private string LoggedInText => $"Logged in: {loggedIn.Name} [{loggedIn.Role}]";
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedIn = await localStorage.GetItemAsync<User?>("user");
+    }
+
+    private void Login()
+    {
+        navManager.NavigateTo("login", true);
+    }
+
+    private async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("user");
+        navManager.NavigateTo("/", true);
+    }
+}
