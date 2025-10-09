@@ -46,6 +46,8 @@
             products = p;
         }
         loggedIn = await localStorage.GetItemAsync<User?>("user");
+        if (loggedIn == null)
+            navManager.NavigateTo("/");
     }
 
     private void GoToAddProduct()
