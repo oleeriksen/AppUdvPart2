@@ -67,15 +67,17 @@
     
     private Product aProduct = new();
 
+    User? loggedIn;
+    
     protected override async Task OnInitializedAsync()
     {
         var p = await localStorage.GetItemAsync<List<Product>>("products");
-        if (p == null)
-            products = new();
-        else
-        {
-            products = p;
-        }
+        products = p ?? new();
+
+        loggedIn = await localStorage.GetItemAsync<User?>("user");
+        if (loggedIn == null || loggedIn.Role != "admin")
+            navManager.NavigateTo("/");
+
     }
 
     private async Task HandleSubmit()

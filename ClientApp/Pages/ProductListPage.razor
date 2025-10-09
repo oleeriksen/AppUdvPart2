@@ -15,17 +15,26 @@
     <tbody>
     @foreach (var p in products)
     {
-        <tr>
-            <td>@p.Name</td>
-            <td>@p.Price</td>
-        </tr>
+        @if (p.Price <= 10000 || (loggedIn != null && loggedIn.Role.Equals("admin")))
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.Price</td>
+            </tr>
+        }
     }
     </tbody>
 </table>
-<button class="btn" @onclick="GoToAddProduct">+</button>
+@if (loggedIn != null && loggedIn.Role.Equals("admin", StringComparison.CurrentCultureIgnoreCase))
+{
+    <button class="btn btn-primary" @onclick="GoToAddProduct">New Product</button>
+}
+
 @code {
 
     private List<Product> products = new();
+
+    User? loggedIn;
     
     protected override async Task OnInitializedAsync()
     {
@@ -36,6 +45,7 @@
         {
             products = p;
         }
+        loggedIn = await localStorage.GetItemAsync<User?>("user");
     }
 
     private void GoToAddProduct()
