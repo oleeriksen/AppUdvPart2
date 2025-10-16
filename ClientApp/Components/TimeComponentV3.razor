@@ -1,0 +1,56 @@
+<div class="top-corner">
+    <span class="fw-bold">Now: 
+        @if (ShowDate)
+        {
+            @currentTime.ToShortDateString()
+        }
+        @if (ShowDate && ShowTime)
+        {
+            <scan>&nbsp;-&nbsp;</scan>
+        }
+        @if (ShowTime)
+        {
+            @currentTime.ToLongTimeString()
+        }
+    </span>
+    <br/>
+    <span class="fw-bolder">Sol: @sunrise.ToShortTimeString() - @sunset.ToShortTimeString()</span>
+    
+</div>
+@code {
+
+    [Parameter]
+    public bool ShowDate { get; set; } = true;
+
+    [Parameter]
+    public bool ShowTime { get; set; } = true;
+
+    DateTime currentTime = DateTime.Now;
+
+    DateTime sunrise;
+
+    DateTime sunset;
+       
+    protected override async Task OnInitializedAsync()
+    {
+        var service = new SunService();
+        var times = await service.GetSunriseSunsetAsync(56.1567, 10.2108, DateTime.Now);
+        sunrise = times.sunrise;
+        sunset = times.sunset;
+        await TimeTicker();
+        
+    }
+       
+    async Task TimeTicker()
+    {
+        PeriodicTimer secondTimer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+
+        while (await secondTimer.WaitForNextTickAsync())
+        {
+            currentTime = DateTime.Now;
+            StateHasChanged(); // if not present - UI will not update
+            //Console.WriteLine(currentTime.ToLongTimeString());
+        }
+    }
+
+}
