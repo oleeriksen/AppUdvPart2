@@ -1,0 +1,64 @@
+@page "/todo2"
+@using ClientApp.Model
+<h3>Todo (@CountMissing() mangler)</h3>
+
+<ul>
+    @foreach (TodoItem todo in mTodos)
+    {
+        <li><InputCheckbox @bind-Value="todo.IsDone" ></InputCheckbox>
+            @todo.Title</li>
+    }
+</ul>
+<button class="btn btn-primary" @onclick="OpenAddDialog">Opret</button>
+
+<ModalDialog @ref="addModalDialog" Title="Add Todo Item">
+    
+    <InputText @bind-Value="newTodoTitle" placeholder="Skriv en ny to-do">
+    </InputText>
+    <button class="btn btn-primary" @onclick="AddTodo">Opret</button>
+    <button class="btn" @onclick="CancelAddTodo">Cancel</button>
+</ModalDialog>
+
+@code {
+    List<TodoItem> mTodos= new();
+
+    string newTodoTitle = "";
+
+    ModalDialog? addModalDialog { get; set; }
+
+    protected override void OnInitialized()
+    {
+        mTodos.Add(new TodoItem { IsDone = true, Title = "Lektier" });
+        mTodos.Add(new TodoItem { IsDone = false, Title = "flere lektier" });
+    }
+
+
+    private void AddTodo()
+    {
+        TodoItem newTd = new TodoItem { IsDone = false, Title = newTodoTitle };
+        newTodoTitle = "";
+        mTodos.Add(newTd);
+        addModalDialog.Close();
+    }
+
+    private void CancelAddTodo()
+    {
+        addModalDialog.Close();
+    }
+
+    private void OpenAddDialog()
+    {
+        addModalDialog.Open();
+    }
+
+    // retur: antal ikke done items i mTodos
+    private int CountMissing()
+    {
+        int result = 0;
+        foreach (TodoItem t in mTodos)
+            if (!t.IsDone)
+                result++;
+        return result;
+    }
+
+}
