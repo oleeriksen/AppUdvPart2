@@ -13,7 +13,6 @@
 
         <!-- Formular til login-->
         <EditForm Model="@user" OnValidSubmit="OnClickLogin">
-            <DataAnnotationsValidator/>
 
             <div class="form-floating-group">
                 <InputText id="un" class="form-control" @bind-Value="user.Name" placeholder="Username"/>
@@ -26,14 +25,14 @@
                            class="form-control"
                            @bind-Value="user.Password"
                            placeholder="Password"/>
-                <label for="pwd">Adgangskode</label>
-                <i class="bi bi-eye" @onclick="ToggleAdgangskodeVisibility">
+                <label for="pwd">Password</label>
+                <i class="bi bi-eye" @onclick="TogglePasswordVisibility">
                     
                 </i>
             </div>
 
             <div style="text-align: center">
-                <button type="submit" class="btn btn-primary">Log ind</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </div>
         </EditForm>
 
@@ -52,13 +51,13 @@
     
     //Bruges til at vise errortext hvis relevant - ellers er den tom
     string errorText = "";
-    //Bruges til at skjule visningen af adgangskoden i vores ToggleAdgangskodeVisibility 
+    //Bruges til at skjule visningen af adgangskoden i vores TogglePasswordVisibility 
     bool visPassword = false;
 
     string PasswordType => visPassword ? "text" : "password";
     
     //Skifter mellem visning og skjul af adgangskodefeltet
-    void ToggleAdgangskodeVisibility()
+    void TogglePasswordVisibility()
     {
         visPassword = !visPassword;
     }
@@ -71,7 +70,7 @@
         
         if (userObject == null)
         {
-            errorText = "Forkert email eller adgangskode, prøv igen";
+            errorText = "Wrong email or password - try again...";
         }
         else
         {

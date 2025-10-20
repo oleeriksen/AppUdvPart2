@@ -10,18 +10,13 @@
     <tr>
         <th>Navn</th>
         <th>Pris</th>
+        <th>Expire Date</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var p in products)
     {
-        @if (p.Price <= 10000 || (loggedIn != null && loggedIn.Role.Equals("admin")))
-        {
-            <tr>
-                <td>@p.Name</td>
-                <td>@p.Price</td>
-            </tr>
-        }
+        <ProductComponent product="p" loggedIn="loggedIn"></ProductComponent>
     }
     </tbody>
 </table>
@@ -30,12 +25,71 @@
     <button class="btn btn-primary" @onclick="GoToAddProduct">New Product</button>
 }
 
+<ModalDialog @ref="addProductDialog" Title="Opret produkt...">
+    <EditForm Model="@aProduct" OnSubmit="@HandleSubmit" class="row p-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    
+        <div class="col-md-12 mb-3">
+            <label for="Name">Name</label>
+            <InputText id="Name" @bind-Value="aProduct.Name" class="form-control" />
+        </div>
+    
+        <div class="col-md-6 mb-3">
+            <label for="Price">Price</label>
+            <InputNumber id="Price" @bind-Value="aProduct.Price" class="form-control" />
+        </div>
+    
+        <div class="col-md-6 mb-3">
+            <label for="PublishedDate">Published Date</label>
+            <InputDate id="PublishedDate" @bind-Value="aProduct.PublishedDate" class="form-control" />
+        </div>
+    
+        <div class="col-md-12 mb-3">
+            <label for="Description">Description</label>
+            <InputTextArea id="Description" @bind-Value="aProduct.Description" class="form-control" />
+        </div>
+    
+        <div class="col-md-6 mb-3">
+            <label for="Stock">Stock</label>
+            <InputNumber id="Stock" @bind-Value="aProduct.Stock" class="form-control" />
+        </div>
+    
+        <div class="col-md-6 mb-3">
+            <label for="category">Category</label>
+            <InputSelect id="category" @bind-Value="aProduct.Category" class="form-control">
+                @foreach (var c in categories)
+                {
+                    <option value="@c">@c</option>
+                }
+            </InputSelect>
+        </div>
+    
+        <div class="col-md-6 mb-3">
+            <label for="IsPublished">Is published</label>
+            <InputCheckbox id="IsPublished" @bind-Value="aProduct.IsPublished" class="form-check-input"/>
+        </div>
+    
+        <div class="col-12 mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    
+    </EditForm>
+</ModalDialog>
 @code {
 
     private List<Product> products = new();
 
     User? loggedIn;
+
+    ModalDialog? addProductDialog { get; set; }
     
+    private Product aProduct = new();
+    
+    private string[] categories = ["computer", "audio", "video", "memory", "other"];
+
+
+
     protected override async Task OnInitializedAsync()
     {
         var p = await localStorage.GetItemAsync<List<Product>>("products");
@@ -46,13 +100,21 @@
             products = p;
         }
         loggedIn = await localStorage.GetItemAsync<User?>("user");
-        if (loggedIn == null)
-            navManager.NavigateTo("/");
+        
     }
 
     private void GoToAddProduct()
     {
-        navManager.NavigateTo("addproduct");
+        addProductDialog.Open();
+    }
+    
+    private async Task HandleSubmit()
+    {
+        aProduct.ExpireDate = aProduct.PublishedDate.AddYears(1);
+        products.Add(aProduct);
+        aProduct = new();
+        await localStorage.SetItemAsync("products", products);
+        addProductDialog.Close();
     }
 
 }

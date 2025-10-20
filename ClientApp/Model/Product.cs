@@ -27,7 +27,8 @@ namespace ClientApp.Model
         public int? Stock { get; set; }
 
         [Required] public string Category { get; set; } = "";
-        
+
+        public DateTime ExpireDate { get; set; } = DateTime.Today.AddDays(9);
     }
 }
 

@@ -1,0 +1,30 @@
+@using ClientApp.Model
+@if (product.Price <= 10000 || (loggedIn != null && loggedIn.Role.Equals("admin")))
+{
+    
+    <tr>
+        <td>@product.Name</td>
+        <td>@product.Price</td>
+        <td class="@BGColor(product.ExpireDate, DateTime.Today)">
+            @product.ExpireDate.ToShortDateString()
+        </td>
+    </tr>
+}
+@code {
+    [Parameter]
+    public Product product { get; set; }
+    
+
+    [Parameter]
+    public User? loggedIn { get; set; }
+
+    // return red if from is less than 10 days from to
+    private string BGColor(DateTime from, DateTime to)
+    {
+        var fromDelta = from.AddDays(10);
+        if (DateTime.Compare(fromDelta, to) >= 0)
+            return "AlertExpireDate";
+        return "none";
+    }
+
+}

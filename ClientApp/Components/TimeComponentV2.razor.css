@@ -2,7 +2,7 @@
 
 .top-corner {
     position: absolute;
-    top:0;
+    top:3.5rem;
     right:0;
     background-color: lightgray;
     padding: 10px;
