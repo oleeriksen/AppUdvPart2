@@ -38,7 +38,7 @@ else
                 {
                     <td>@forecast.TemperatureF</td>
                 }
-                <td class="@ClassForSummary(forecast.Summary)">@forecast.Summary</td>
+                <td>@forecast.Summary</td>
             </tr>
         }
         </tbody>
@@ -62,14 +62,6 @@ else
     private void ToogleF() {
         FVises = !FVises;
     }
-
-    private string ClassForSummary(string? forecastSummary)
-    {
-        switch (forecastSummary.ToLower())
-        {
-            case "freezing":
-                case "cool": return "BlueText";
-        }
-    }
+    
 
 }
