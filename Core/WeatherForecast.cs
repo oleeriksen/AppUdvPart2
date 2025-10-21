@@ -1,4 +1,4 @@
-namespace ServerApp;
+namespace Core;
 
 public class WeatherForecast
 {
