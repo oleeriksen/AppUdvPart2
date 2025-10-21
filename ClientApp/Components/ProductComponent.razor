@@ -5,7 +5,7 @@
     <tr>
         <td>@product.Name</td>
         <td>@product.Price</td>
-        <td class="@BGColor(product.ExpireDate, DateTime.Today)">
+        <td class="@BGColor(product.ExpireDate)">
             @product.ExpireDate.ToShortDateString()
         </td>
     </tr>
@@ -18,11 +18,11 @@
     [Parameter]
     public User? loggedIn { get; set; }
 
-    // return red if from is less than 10 days from to
-    private string BGColor(DateTime from, DateTime to)
+    // return red if from is less than 10 days from today
+    private string BGColor(DateTime from)
     {
         var fromDelta = from.AddDays(10);
-        if (DateTime.Compare(fromDelta, to) >= 0)
+        if (DateTime.Compare(fromDelta, DateTime.Today) >= 0)
             return "AlertExpireDate";
         return "none";
     }
