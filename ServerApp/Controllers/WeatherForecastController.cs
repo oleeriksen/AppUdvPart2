@@ -11,13 +11,6 @@ public class WeatherForecastController : ControllerBase
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-    private readonly ILogger<WeatherForecastController> _logger;
-
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
-    {
-        _logger = logger;
-    }
-
     [HttpGet]
     [Route("default")]
     public IEnumerable<WeatherForecast> Get()
@@ -29,12 +22,22 @@ public class WeatherForecastController : ControllerBase
     [Route("{n:int}")]
     public WeatherForecast[] Get(int n)
     {
-        return Enumerable.Range(1, n).Select(index => new WeatherForecast
-            {
+        List<WeatherForecast> result = new();
+        for (int index = 1; index <= n; index++) {
+            var forecast = new WeatherForecast {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            };
+            result.Add(forecast);
+        }
+        return result.ToArray();
+    }
+    
+    [HttpGet]
+    [Route("ping")]
+    public string Ping()
+    {
+        return "Weather API - version 0.1";
     }
 }
