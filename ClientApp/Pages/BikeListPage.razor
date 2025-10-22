@@ -1,6 +1,7 @@
 ﻿@page "/bike"
 @using Core
 @inject HttpClient http
+@inject NavigationManager navMan
 <PageTitle>Bikes</PageTitle>
 
 <h1>Bikes</h1>
@@ -13,18 +14,18 @@ else
 {
      
     <table class="table table-striped">
-        
         <tbody> 
-            @foreach (var bike in bikes)
-            {
-                <tr class="bikeRow">
-                    <td><h2>@bike.Brand - @bike.Model</h2><br />
+        @foreach (var bike in bikes)
+        {
+            <tr class="bikeRow">
+                <td><h2>@bike.Brand - @bike.Model</h2><br />
                     Price: @bike.Price kr.</td>
-                    <td><img class="bikeImg" src="@bike.ImageUrl" width="200px"/></td>
-                </tr>
-            }
+                <td><img class="bikeImg" src="@bike.ImageUrl" width="200px"/></td>
+            </tr>
+        }
         </tbody>
     </table>
+    <button class="btn btn-primary" @onclick="OnClickCreateBike">Create Bike</button>
     
 }
 
@@ -38,9 +39,12 @@ else
     {
         bikes = await http.GetFromJsonAsync<Bike[]>("http://localhost:5217/api/bike");
     }
-    
-    
-    
+
+
+    private void OnClickCreateBike()
+    {
+        navMan.NavigateTo("addbike");
+    }
 
 }
 

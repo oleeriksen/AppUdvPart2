@@ -1,12 +1,13 @@
 ﻿@page "/addbike"
 @using Core
 @inject HttpClient http
+@inject NavigationManager navMan
 
 <PageTitle>Add Bike</PageTitle>
 
 <h3>Add Bike</h3>
 
-<EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@_bike" class="row p-3" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="col-md-12 mb-3">
@@ -34,19 +35,13 @@
 
 @code {
     Bike _bike = new();
-
-    private EditContext aEditContext;
-
     
-    protected override void OnInitialized()
-    {
-        aEditContext = new EditContext(_bike);
-    }
 
     public async Task HandleValidSubmit()
     {
         await http.PostAsJsonAsync("http://localhost:5217/api/bike", _bike);
         _bike = new(); // clear fields in form
+        navMan.NavigateTo("bike");
 
     }
 

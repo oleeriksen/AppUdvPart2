@@ -12,6 +12,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.AllowAnyOrigin();
+            policy.AllowAnyMethod();
+            policy.AllowAnyHeader();
         });
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
