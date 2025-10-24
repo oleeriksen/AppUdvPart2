@@ -35,10 +35,5 @@ public class WeatherForecastController : ControllerBase
         return result.ToArray();
     }
     
-    [HttpGet]
-    [Route("ping")]
-    public string Ping()
-    {
-        return "Weather API - version 0.1";
-    }
+    
 }
