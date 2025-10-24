@@ -6,8 +6,6 @@ namespace ServerApp.Controllers;
 [Route("api/ping")]
 public class PingController : ControllerBase
 {
-    
-    
     [HttpGet]
     public string Ping()
     {
