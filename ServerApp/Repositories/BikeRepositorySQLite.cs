@@ -13,13 +13,12 @@ namespace ServerApp.Repositories
         
         public BikeRepositorySQLite() {
             mConnection = new SqliteConnection(connectionString);
+            mConnection.Open();
         }
 
         public Bike[] GetAll()
         {
             var result = new List<Bike>();
-
-            mConnection.Open();
 
             var command = mConnection.CreateCommand();
             command.CommandText = @"SELECT * FROM Bike";
