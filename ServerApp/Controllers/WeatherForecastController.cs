@@ -35,5 +35,21 @@ public class WeatherForecastController : ControllerBase
         return result.ToArray();
     }
     
+    [HttpGet]
+    [Route("{min:int}/{max:int}")]
+    public WeatherForecast[] GetByInterval(int min, int max)
+    {
+        List<WeatherForecast> result = new();
+        for (int index = 1; index <= 100; index++) {
+            var forecast = new WeatherForecast {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(min, max+1),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            };
+            result.Add(forecast);
+        }
+        return result.ToArray();
+    }
+    
     
 }

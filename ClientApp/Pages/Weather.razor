@@ -54,7 +54,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("http://localhost:5217/api/vejr/200");
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("http://localhost:5217/api/vejr/16/18");
     }
 
     private string TextOnButton => FVises? "Skjul F": "Vis F";

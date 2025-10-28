@@ -12,7 +12,6 @@
 }
 else
 {
-     
     <table class="table table-striped">
         <tbody> 
         @foreach (var bike in bikes)
@@ -32,15 +31,12 @@ else
 @code {
 
     private Bike[]? bikes;
-
     
-
     protected override async Task OnInitializedAsync()
     {
         bikes = await http.GetFromJsonAsync<Bike[]>("http://localhost:5217/api/bike");
     }
-
-
+    
     private void OnClickCreateBike()
     {
         navMan.NavigateTo("addbike");
