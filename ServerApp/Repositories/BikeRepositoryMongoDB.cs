@@ -5,7 +5,6 @@ namespace ServerApp.Repositories;
 
 public class BikeRepositoryMongoDB:IBikeRepository
 {
-    private IMongoClient client;
         
     private IMongoCollection<Bike> bikeCollection;
 
@@ -17,6 +16,7 @@ public class BikeRepositoryMongoDB:IBikeRepository
             //local mongodb
             var mongoUri = "mongodb://localhost:27017/";
             
+            MongoClient client;
             try
             {
                 client = new MongoClient(mongoUri);
@@ -38,38 +38,44 @@ public class BikeRepositoryMongoDB:IBikeRepository
         }
 
         public void Add(Bike item) {
+            // before inserting, a unique id must be found.
+            // the first way to do that is by computing the largest
+            // id in the collection, and adding one to that.
             var max = 0;
-            if (bikeCollection.Count(Builders<Bike>.Filter.Empty) > 0)
+            if (bikeCollection.CountDocuments(Builders<Bike>.Filter.Empty) > 0)
             {
                 max = MaxId();
             }
             item.Id = max + 1;
-            // alternative:
+            // alternatively, you can just choose a new Guid - a take
+            // the hashcode of that as the new id. This can fail, by
+            // it is very unlikely
             //int newid = Guid.NewGuid().GetHashCode();
             //item.Id = newid;
             bikeCollection.InsertOne(item);
            
         }
+        
+        public Bike[] GetAll() {
+            var noFilter = Builders<Bike>.Filter.Empty;
+            return bikeCollection.Find(noFilter).ToList().ToArray();
+        }
 
         private int MaxId() {
-            /*var noFilter = Builders<BEBike>.Filter.Empty;
-            var elementWithHighestId = collection.Find(noFilter).SortByDescending(r => r.Id).Limit(1).ToList()[0];
-            return elementWithHighestId.Id;*/
             return GetAll().Select(b => b.Id).Max();
 
         }
 
-        public void DeleteById(int id){
+        /*
+         public void DeleteById(int id){
             var deleteResult = bikeCollection
                 .DeleteOne(Builders<Bike>.Filter.Where(r => r.Id == id));
         }
+        */
 
-        public Bike[] GetAll() {
-            var noFilter = Builders<Bike>.Filter.Empty;
-           return bikeCollection.Find(noFilter).ToList().ToArray();
-        }
+        
 
-        public Bike[] GetAllByShop(string brand) {
+        /*public Bike[] GetAllByBrand(string brand) {
             var brandFilter = Builders<Bike>.Filter.Where(r => r.Brand.Equals(brand));
             return bikeCollection.Find(brandFilter).ToList().ToArray();
 
@@ -85,6 +91,6 @@ public class BikeRepositoryMongoDB:IBikeRepository
                 .Set(x => x.ImageUrl, item.ImageUrl);
             bikeCollection.UpdateOne(x => x.Id == item.Id, updateDef);
             
-        }
+        }*/
  
 }
