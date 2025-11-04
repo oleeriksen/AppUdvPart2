@@ -1,7 +1,9 @@
 ﻿@page "/addbike"
+@using ClientApp.Service
 @using Core
 @inject HttpClient http
 @inject NavigationManager navMan
+@inject IBikeService bikeService
 
 <PageTitle>Add Bike</PageTitle>
 
@@ -36,10 +38,10 @@
 @code {
     Bike _bike = new();
     
-
     public async Task HandleValidSubmit()
     {
-        await http.PostAsJsonAsync("http://localhost:5217/api/bike", _bike);
+        // await http.PostAsJsonAsync("http://localhost:5217/api/bike", _bike);
+        await bikeService.Add(_bike);
         _bike = new(); // clear fields in form
         navMan.NavigateTo("bike");
 

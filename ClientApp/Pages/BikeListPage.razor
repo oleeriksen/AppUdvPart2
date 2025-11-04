@@ -1,7 +1,8 @@
 ﻿@page "/bike"
+@using ClientApp.Service
 @using Core
-@inject HttpClient http
 @inject NavigationManager navMan
+@inject IBikeService bikeService
 <PageTitle>Bikes</PageTitle>
 
 <h1>Bikes</h1>
@@ -35,7 +36,11 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        bikes = await http.GetFromJsonAsync<Bike[]>("http://localhost:5217/api/bike");
+        //without services:
+        //bikes = await http.GetFromJsonAsync<Bike[]>("http://localhost:5217/api/bike");
+        // with services:
+        bikes = await bikeService.GetAll();
+
     }
     
     private void OnClickCreateBike()
@@ -45,10 +50,9 @@ else
 
     private async Task DeleteBike(Bike bike)
     {
-        await http.DeleteAsync($"http://localhost:5217/api/bike/{bike.Id}");
+        await bikeService.DeleteById(bike.Id);
         // Update UI
-        bikes = await http.GetFromJsonAsync<Bike[]>("http://localhost:5217/api/bike");
-
+        bikes = await bikeService.GetAll();
     }
 
 }
