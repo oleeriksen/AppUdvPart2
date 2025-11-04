@@ -26,6 +26,13 @@ namespace ServerApp.Controllers
             bikeRepo.Add(bike);
         }
 
+        [HttpDelete]
+        [Route("{id:int}")]
+        public void Delete(int id)
+        {
+            bikeRepo.Delete(id);
+        }
+
 
 
     }

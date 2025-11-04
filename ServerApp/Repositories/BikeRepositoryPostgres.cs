@@ -10,9 +10,9 @@ namespace ServerApp.Repositories
     {
         private const string connectionString = @"Server=127.0.0.1:5432;User Id=oleeriksen;Password=1234;database=Bike";
 
-        
-        
-        public BikeRepositoryPostgres() {
+
+        public BikeRepositoryPostgres()
+        {
         }
 
         public Bike[] GetAll()
@@ -57,34 +57,46 @@ namespace ServerApp.Repositories
                 var command = mConnection.CreateCommand();
 
                 command.CommandText =
-                    $"INSERT INTO bike (brand, model, description, price, imageurl) VALUES ('{bike.Brand}', '{bike.Model}', '{bike.Description}', {bike.Price}, '{bike.ImageUrl}')";
-                
+                    "INSERT INTO bike (brand, model, description, price, imageurl) VALUES (@brand, @model, @desc, @price, @imgurl)";
+
                 Console.WriteLine(command.CommandText);
-                /*var paramBrand = command.CreateParameter();
+                var paramBrand = command.CreateParameter();
                 paramBrand.ParameterName = "brand";
                 command.Parameters.Add(paramBrand);
                 paramBrand.Value = bike.Brand;
-                
+
                 var paramModel = command.CreateParameter();
                 paramModel.ParameterName = "model";
                 command.Parameters.Add(paramModel);
                 paramModel.Value = bike.Model;
-                
+
                 var paramDesc = command.CreateParameter();
                 paramDesc.ParameterName = "desc";
                 command.Parameters.Add(paramDesc);
                 paramDesc.Value = bike.Description;
-                
+
                 var paramPrice = command.CreateParameter();
                 paramPrice.ParameterName = "price";
                 command.Parameters.Add(paramPrice);
-                paramPrice.Value = bike.Brand;
-                
+                paramPrice.Value = bike.Price;
+
                 var paramImg = command.CreateParameter();
                 paramImg.ParameterName = "imgurl";
                 command.Parameters.Add(paramImg);
                 paramImg.Value = bike.ImageUrl;
-                */
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (var mConnection = new NpgsqlConnection(connectionString))
+            {
+                mConnection.Open();
+                var command = mConnection.CreateCommand();
+
+                command.CommandText = $"DELETE FROM bike WHERE id={id}";
                 command.ExecuteNonQuery();
             }
         }

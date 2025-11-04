@@ -3,7 +3,7 @@ using ServerApp.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IBikeRepository, BikeRepositoryMongoDB>();
+builder.Services.AddSingleton<IBikeRepository, BikeRepositorySQLite>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>

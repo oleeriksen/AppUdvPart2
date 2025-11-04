@@ -20,6 +20,7 @@ else
                 <td><h2>@bike.Brand - @bike.Model</h2><br />
                     Price: @bike.Price kr.</td>
                 <td><img class="bikeImg" src="@bike.ImageUrl" width="200px"/></td>
+                <td><button class="btn-close" @onclick="() => DeleteBike(bike)"></button></td>
             </tr>
         }
         </tbody>
@@ -40,6 +41,14 @@ else
     private void OnClickCreateBike()
     {
         navMan.NavigateTo("addbike");
+    }
+
+    private async Task DeleteBike(Bike bike)
+    {
+        await http.DeleteAsync($"http://localhost:5217/api/bike/{bike.Id}");
+        // Update UI
+        bikes = await http.GetFromJsonAsync<Bike[]>("http://localhost:5217/api/bike");
+
     }
 
 }

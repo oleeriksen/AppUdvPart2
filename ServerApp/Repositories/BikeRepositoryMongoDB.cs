@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace ServerApp.Repositories;
 
-public class BikeRepositoryMongoDB:IBikeRepository
+public class BikeRepositoryMongoDB :IBikeRepository
 {
         
     private IMongoCollection<Bike> bikeCollection;
@@ -40,7 +40,8 @@ public class BikeRepositoryMongoDB:IBikeRepository
         public void Add(Bike item) {
             // before inserting, a unique id must be found.
             // the first way to do that is by computing the largest
-            // id in the collection, and adding one to that.
+            // id in the collection. The next unique id is this maximal id
+            // plus 1.
             var max = 0;
             if (bikeCollection.CountDocuments(Builders<Bike>.Filter.Empty) > 0)
             {
@@ -55,26 +56,24 @@ public class BikeRepositoryMongoDB:IBikeRepository
             bikeCollection.InsertOne(item);
            
         }
+
+        private int MaxId()  => GetAll().Select(b => b.Id).Max();
+
         
+        public void Delete(int id)
+        {
+            var deleteResult = bikeCollection
+                .DeleteOne(Builders<Bike>.Filter.Where(r => r.Id == id));
+            
+        }
+
         public Bike[] GetAll() {
             var noFilter = Builders<Bike>.Filter.Empty;
             return bikeCollection.Find(noFilter).ToList().ToArray();
         }
 
-        private int MaxId() {
-            return GetAll().Select(b => b.Id).Max();
-
-        }
-
-        /*
-         public void DeleteById(int id){
-            var deleteResult = bikeCollection
-                .DeleteOne(Builders<Bike>.Filter.Where(r => r.Id == id));
-        }
-        */
-
         
-
+        
         /*public Bike[] GetAllByBrand(string brand) {
             var brandFilter = Builders<Bike>.Filter.Where(r => r.Brand.Equals(brand));
             return bikeCollection.Find(brandFilter).ToList().ToArray();

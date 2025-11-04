@@ -6,6 +6,7 @@ namespace ServerApp.Repositories
 	{
 		Bike[] GetAll();
 		void Add(Bike bike);
+		void Delete(int id);
 	}
 }
 

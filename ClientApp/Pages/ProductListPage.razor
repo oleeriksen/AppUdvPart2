@@ -4,27 +4,32 @@
 @using ClientApp.Model
 <h1 class="mb-3 mt-3">Product list</h1>
 
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>Navn</th>
-        <th>Pris</th>
-        <th>Expire Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var p in products)
-    {
-        <ProductComponent product="p" loggedIn="loggedIn"></ProductComponent>
-    }
-    </tbody>
-</table>
-@if (loggedIn != null && loggedIn.Role.Equals("admin", StringComparison.CurrentCultureIgnoreCase))
+@if (products != null)
 {
-    <button class="btn btn-primary" @onclick="GoToAddProduct">New Product</button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Navn</th>
+            <th>Pris</th>
+            <th>Expire Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var p in products)
+        {
+            <ProductComponent product="p" loggedIn="loggedIn"></ProductComponent>
+        }
+        </tbody>
+    </table>
+    @if (loggedIn != null && loggedIn.Role.Equals("admin", StringComparison.CurrentCultureIgnoreCase))
+    {
+        <button class="btn btn-primary" @onclick="GoToAddProduct">New Product</button>
+    }
 }
-
+else
+{
+    <scan>Loading products....just a moment... ;-)</scan>
+}
 <ModalDialog @ref="addProductDialog" Title="Opret produkt...">
     <EditForm Model="@aProduct" OnSubmit="@HandleSubmit" class="row p-3">
         <DataAnnotationsValidator />
@@ -78,7 +83,7 @@
 </ModalDialog>
 @code {
 
-    private List<Product> products = new();
+    private List<Product>? products = null;
 
     User? loggedIn;
 
@@ -92,16 +97,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var p = await localStorage.GetItemAsync<List<Product>>("products");
-        if (p == null)
-            products = new();
-        else
-        {
-            products = p;
-        }
         loggedIn = await localStorage.GetItemAsync<User?>("user");
-        
+        var p = await localStorage.GetItemAsync<List<Product>>("products");
+        await Task.Delay(8000);
+        products = p ?? new List<Product>();
     }
+    
 
     private void GoToAddProduct()
     {
