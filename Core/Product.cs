@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ClientApp.Model
+namespace Core
 {
     public class Product
     {

@@ -1,7 +1,9 @@
 ﻿@page "/productlist"
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-@inject NavigationManager navManager
+@inject IProductService productService
 @using ClientApp.Model
+@using ClientApp.Service
+@using Core
 <h1 class="mb-3 mt-3">Product list</h1>
 
 @if (products != null)
@@ -83,7 +85,7 @@ else
 </ModalDialog>
 @code {
 
-    private List<Product>? products = null;
+    private List<Product> products;
 
     User? loggedIn;
 
@@ -98,7 +100,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         loggedIn = await localStorage.GetItemAsync<User?>("user");
-        var p = await localStorage.GetItemAsync<List<Product>>("products");
+        var p = await productService.GetAll();
         await Task.Delay(8000);
         products = p ?? new List<Product>();
     }
@@ -112,9 +114,9 @@ else
     private async Task HandleSubmit()
     {
         aProduct.ExpireDate = aProduct.PublishedDate.AddYears(1);
-        products.Add(aProduct);
+        await productService.Add(aProduct);
         aProduct = new();
-        await localStorage.SetItemAsync("products", products);
+        products = await productService.GetAll();
         addProductDialog.Close();
     }
 
