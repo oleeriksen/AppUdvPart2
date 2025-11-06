@@ -25,6 +25,6 @@ public class BikeServiceHttp : IBikeService
 
     public async Task DeleteById(int id)
     {
-        await client.DeleteAsync($"{Server.Url}/bike/{id}");
+        await client.DeleteAsync($"{Server.Url}/bike/delete?id={id}");
     }
 }

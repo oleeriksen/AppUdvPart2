@@ -27,8 +27,15 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:int}")]
+    [Route("delete/{id:int}")]
     public void Delete(int id)
+    {
+        productRepo.DeleteById(id);
+    }
+    
+    [HttpDelete]
+    [Route("delete")]
+    public void DeleteByQuery([FromQuery]int id)
     {
         productRepo.DeleteById(id);
     }

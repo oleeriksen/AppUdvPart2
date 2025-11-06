@@ -27,8 +27,15 @@ namespace ServerApp.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:int}")]
+        [Route("delete/{id:int}")]
         public void Delete(int id)
+        {
+            bikeRepo.Delete(id);
+        }
+        
+        [HttpDelete]
+        [Route("delete")]
+        public void DeleteByQuery([FromQuery] int id)
         {
             bikeRepo.Delete(id);
         }

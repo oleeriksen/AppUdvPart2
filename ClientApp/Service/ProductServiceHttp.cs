@@ -25,7 +25,7 @@ public class ProductServiceHttp : IProductService
 
     public async Task DeleteById(int id)
     {
-        var endPoint = $"{Server.Url}/product/{id}";
+        var endPoint = $"{Server.Url}/delete/product?id={id}";
         await client.DeleteAsync(endPoint);
     }
 }
