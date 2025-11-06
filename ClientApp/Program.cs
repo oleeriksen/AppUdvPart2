@@ -13,7 +13,7 @@ builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(build
 
 // brug af local storage
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddSingleton<IBikeService, BikeServiceMock>();
+builder.Services.AddSingleton<IBikeService, BikeServiceHttp>();
 builder.Services.AddSingleton<IProductService, ProductServiceHttp>();
 
 await builder.Build().RunAsync();

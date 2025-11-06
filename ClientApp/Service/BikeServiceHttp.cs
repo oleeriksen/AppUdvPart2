@@ -5,7 +5,6 @@ namespace ClientApp.Service;
 
 public class BikeServiceHttp : IBikeService
 {
-    private string serverUrl = "http://localhost:5217/api/bike";
     
     private HttpClient client;
     
@@ -14,18 +13,18 @@ public class BikeServiceHttp : IBikeService
         this.client = client;
     }
 
-    public async Task<Bike[]> GetAll()
+    public async Task<Bike[]?> GetAll()
     {
-        return await client.GetFromJsonAsync<Bike[]>(serverUrl);
+        return await client.GetFromJsonAsync<Bike[]>($"{Server.Url}/bike");
     }
 
     public async Task Add(Bike bike)
     {
-        await client.PostAsJsonAsync(serverUrl, bike);
+        await client.PostAsJsonAsync($"{Server.Url}/bike", bike);
     }
 
     public async Task DeleteById(int id)
     {
-        await client.DeleteAsync($"{serverUrl}/{id}");
+        await client.DeleteAsync($"{Server.Url}/bike/{id}");
     }
 }

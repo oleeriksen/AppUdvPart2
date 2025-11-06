@@ -5,7 +5,6 @@ namespace ClientApp.Service;
 
 public class ProductServiceHttp : IProductService
 {
-    private string serverUrl = "http://localhost:5217/api/product";
     
     private HttpClient client;
     
@@ -14,18 +13,19 @@ public class ProductServiceHttp : IProductService
         this.client = client;
     }
 
-    public async Task<List<Product>> GetAll()
+    public async Task<List<Product>?> GetAll()
     {
-        return await client.GetFromJsonAsync<List<Product>>(serverUrl);
+        return await client.GetFromJsonAsync<List<Product>?>($"{Server.Url}/product");
     }
 
     public async Task Add(Product p)
     {
-        await client.PostAsJsonAsync(serverUrl, p);
+        await client.PostAsJsonAsync($"{Server.Url}/product", p);
     }
 
     public async Task DeleteById(int id)
     {
-        await client.DeleteAsync($"{serverUrl}/{id}");
+        var endPoint = $"{Server.Url}/product/{id}";
+        await client.DeleteAsync(endPoint);
     }
 }

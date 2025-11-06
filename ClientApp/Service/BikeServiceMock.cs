@@ -11,7 +11,7 @@ public class BikeServiceMock : IBikeService
         mBikes = new();
     }
     
-    public async Task<Bike[]> GetAll()
+    public async Task<Bike[]?> GetAll()
     {
         return mBikes.ToArray();
     }

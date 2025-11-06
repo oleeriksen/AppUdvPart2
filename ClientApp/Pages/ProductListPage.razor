@@ -85,7 +85,7 @@ else
 </ModalDialog>
 @code {
 
-    private List<Product> products;
+    private List<Product>? products;
 
     User? loggedIn;
 
@@ -101,7 +101,6 @@ else
     {
         loggedIn = await localStorage.GetItemAsync<User?>("user");
         var p = await productService.GetAll();
-        await Task.Delay(8000);
         products = p ?? new List<Product>();
     }
     
