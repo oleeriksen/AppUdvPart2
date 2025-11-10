@@ -1,0 +1,49 @@
+@page "/if"
+@using ClientApp.Service
+@inject HttpClient Http
+<h3>Upload af fil</h3>
+
+<InputFile OnChange="@UploadFile" />
+
+<p>@statusMessage</p>
+
+@foreach (string key in keys)
+{
+    <p>
+    <span>@key</span>
+    <img src="@key" alt="Mit billede" width="100" height="100"/>
+    </p>
+}
+
+@code {
+    
+    private string statusMessage = "<no message - yet>";
+
+    FileService fileService;
+
+    private List<string> keys = new();
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        fileService = new FileService(Http);
+        keys = await fileService.GetAllKeys(true);
+    }
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        // compute a stream to the file chosen by the user
+        var file = e.File;
+        var stream = file.OpenReadStream(maxAllowedSize: 10_000_000); // fx 10 MB
+
+        
+
+        var res = await fileService.SendFile(file.Name, stream);
+        
+        statusMessage = res.success ? 
+                            $"Upload lykkedes til {res.info} !!!" : 
+                            $"Fejl: {res.info}";
+        
+        keys = await fileService.GetAllKeys(true);
+    }
+}
