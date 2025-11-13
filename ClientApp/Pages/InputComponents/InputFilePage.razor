@@ -35,9 +35,7 @@
         // compute a stream to the file chosen by the user
         var file = e.File;
         var stream = file.OpenReadStream(maxAllowedSize: 10_000_000); // fx 10 MB
-
         
-
         var res = await fileService.SendFile(file.Name, stream);
         
         statusMessage = res.success ? 
