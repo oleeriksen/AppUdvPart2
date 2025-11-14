@@ -9,13 +9,15 @@
 
 @if (keys != null)
 {
+    <div class="images-grid">
     @foreach (string key in keys)
     {
-        <p>
+        <div class="image-item">
             <scan>@key</scan><br/>
             <img src="@fileService.ConvertToUrl(key)" alt="Mit billede" width="100" height="100"/>
-        </p>
+        </div>
     }
+    </div>
 }
 else
 {
