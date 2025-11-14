@@ -1,18 +1,18 @@
-@page "/if"
+@page "/gallery"
 @using ClientApp.Service
-@inject HttpClient Http
 @inject IFileService fileService
-<h3>Upload af fil</h3>
+<h3>Mit galleri</h3>
 
+<h3>Add image</h3>
 <InputFile OnChange="@UploadFile" />
-
 <p>@statusMessage</p>
+
 @if (keys != null)
 {
     @foreach (string key in keys)
     {
         <p>
-            <span>@key</span>
+            <scan>@key</scan><br/>
             <img src="@fileService.ConvertToUrl(key)" alt="Mit billede" width="100" height="100"/>
         </p>
     }
@@ -21,6 +21,10 @@ else
 {
     <p>Waiting for fileserver....</p>
 }
+<h3>Add image</h3>
+<InputFile OnChange="@UploadFile" />
+<p>@statusMessage</p>
+
 
 @code {
     
@@ -44,8 +48,8 @@ else
         var res = await fileService.SendFile(file.Name, stream);
         
         statusMessage = res.success ? 
-                            $"Upload lykkedes til {res.info} !!!" : 
-                            $"Fejl: {res.info}";
+            $"Upload lykkedes til {res.info} !!!" : 
+            $"Fejl: {res.info}";
         
         keys = await fileService.GetAllKeys();
     }
