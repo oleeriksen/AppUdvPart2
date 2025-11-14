@@ -2,21 +2,17 @@ using System.Net.Http.Json;
 
 namespace ClientApp.Service;
 
-public class FileService
+public class FileService : IFileService
 {
-    private List<string> keys = new();
-
+    
     private HttpClient http;
 
     public FileService(HttpClient http)
     {
         this.http = http;
-        
     }
 
-    // send s as a file. [success] is true if the file was saved and then the info is the
-    // unique key for that file. [success] is false if an error occured, and then the info 
-    // is the errormessage.
+    
     public async Task<(bool success, string info)> SendFile(string filename, Stream s)
     {
         // add the stream to the body of the http request
@@ -32,7 +28,6 @@ public class FileService
 
         if (response.IsSuccessStatusCode)
         {
-            keys.Add(key);
             return (true, key);
         }
         // else
@@ -40,15 +35,12 @@ public class FileService
 
     }
 
-    public async Task<List<string>> GetAllKeys(bool expandToUrls)
+    public async Task<List<string>> GetAllKeys()
     {
         var keys = await http.GetFromJsonAsync<List<string>>($"{Server.Url}/files/getall");
-
-        if (!expandToUrls)
-            return keys;
-        var res = new List<string>();
-        foreach (string k in keys)
-            res.Add($"{Server.Url}/files/{k}");
-        return res;
+        return keys;
     }
+
+    public string ConvertToUrl(string key) => $"{Server.Url}/files/{key}";
+    
 }

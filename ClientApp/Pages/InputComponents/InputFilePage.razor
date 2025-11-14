@@ -1,6 +1,7 @@
 @page "/if"
 @using ClientApp.Service
 @inject HttpClient Http
+@inject IFileService fileService
 <h3>Upload af fil</h3>
 
 <InputFile OnChange="@UploadFile" />
@@ -11,7 +12,7 @@
 {
     <p>
     <span>@key</span>
-    <img src="@key" alt="Mit billede" width="100" height="100"/>
+    <img src="@fileService.ConvertToUrl(key)" alt="Mit billede" width="100" height="100"/>
     </p>
 }
 
@@ -19,15 +20,15 @@
     
     private string statusMessage = "<no message - yet>";
 
-    FileService fileService;
+    //IFileService fileService;
 
     private List<string> keys = new();
     
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         fileService = new FileService(Http);
-        keys = await fileService.GetAllKeys(true);
+        keys = await fileService.GetAllKeys();
     }
 
     private async Task UploadFile(InputFileChangeEventArgs e)
@@ -42,6 +43,6 @@
                             $"Upload lykkedes til {res.info} !!!" : 
                             $"Fejl: {res.info}";
         
-        keys = await fileService.GetAllKeys(true);
+        keys = await fileService.GetAllKeys();
     }
 }

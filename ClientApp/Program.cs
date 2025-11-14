@@ -15,5 +15,6 @@ builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(build
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<IBikeService, BikeServiceHttp>();
 builder.Services.AddSingleton<IProductService, ProductServiceHttp>();
+builder.Services.AddSingleton<IFileService, FileService>();
 
 await builder.Build().RunAsync();
