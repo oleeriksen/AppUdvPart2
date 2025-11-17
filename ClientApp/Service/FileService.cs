@@ -43,4 +43,16 @@ public class FileService : IFileService
 
     public string ConvertToUrl(string key) => $"{Server.Url}/files/{key}";
     
+    
+    public async Task<(bool success, string info)> DeleteFile(string filename)
+    {
+        var httpResp = await http.DeleteAsync($"{Server.Url}/files/{filename}");
+        if (httpResp.IsSuccessStatusCode)
+        {
+            return (true, "File deleted");
+        }
+        return (false, httpResp.ReasonPhrase);
+        
+
+    }
 }

@@ -15,6 +15,7 @@
         <div class="image-item">
             <scan>@key</scan><br/>
             <img src="@fileService.ConvertToUrl(key)" alt="Mit billede" width="100" height="100"/>
+            <button class="btn btn-close" @onclick="() => DeleteFile(key)"></button>
         </div>
     }
     </div>
@@ -50,9 +51,21 @@ else
         var res = await fileService.SendFile(file.Name, stream);
         
         statusMessage = res.success ? 
-            $"Upload lykkedes til {res.info} !!!" : 
+            $"Success! Info fra server: <{res.info}>" : 
             $"Fejl: {res.info}";
         
         keys = await fileService.GetAllKeys();
     }
+
+    private async Task DeleteFile(string key)
+    {
+        var resp = await fileService.DeleteFile(key);
+        
+        statusMessage = resp.success ? 
+            $"Success! Info fra server:{resp.info}" : 
+            $"Fejl: {resp.info}";
+        
+        keys = await fileService.GetAllKeys();
+    }
+    
 }

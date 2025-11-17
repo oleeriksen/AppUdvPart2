@@ -43,7 +43,8 @@ public class FileController : ControllerBase
 
     // Return the file with name [fileName]. This is regarded as a key for the
     // file
-    [HttpGet("{fileName}")]
+    [HttpGet]
+    [Route("{fileName}")]
     public IActionResult GetFileByKey(string fileName)
     {
         var filePath = Path.Combine(PATH, fileName);
@@ -79,5 +80,20 @@ public class FileController : ControllerBase
                     res.Add(f.Name);
         }
         return res;
+    }
+    
+    // Return the file with name [fileName]. This is regarded as a key for the
+    // file
+    [HttpDelete]
+    [Route("{fileName}")]
+    public IActionResult DeleteFileByKey(string fileName)
+    {
+        var filePath = Path.Combine(PATH, fileName);
+
+        if (!System.IO.File.Exists(filePath))
+            return NotFound();
+
+        System.IO.File.Delete(filePath);
+        return Ok();
     }
 }
