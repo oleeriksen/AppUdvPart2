@@ -52,7 +52,7 @@ public class FileController : ControllerBase
         if (!System.IO.File.Exists(filePath))
             return NotFound();
 
-        var mimeType = GetMimeType(filePath); // se nedenfor
+        var mimeType = GetMimeType(filePath); // see below
 
         return PhysicalFile(filePath, mimeType);
     }
@@ -62,6 +62,7 @@ public class FileController : ControllerBase
         var provider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
         if (!provider.TryGetContentType(filePath, out var contentType))
         {
+            // set type of content to unknown...
             contentType = "application/octet-stream";
         }
         return contentType;
