@@ -10,11 +10,11 @@ public class BikeRepositoryMongoDB :IBikeRepository
 
     public BikeRepositoryMongoDB() {
             // atlas database
-            //var password = ""; //add
-            //var mongoUri = $"mongodb+srv://olee58:{password}@cluster0.olmnqak.mongodb.net/?retryWrites=true&w=majority";
+            var password = ""; //add
+            var mongoUri = $"mongodb+srv://olee58:{password}@cluster0.olmnqak.mongodb.net/?retryWrites=true&w=majority";
            
             //local mongodb
-            var mongoUri = "mongodb://localhost:27017/";
+            //var mongoUri = "mongodb://localhost:27017/";
             
             MongoClient client;
             try

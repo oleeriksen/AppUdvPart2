@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ServerApp.Repositories;
 
 namespace ServerApp.Controllers;
 
@@ -6,9 +7,14 @@ namespace ServerApp.Controllers;
 [Route("api/files")]
 public class FileController : ControllerBase
 {
-
+    private IFileRepo mRepo;
     private string PATH = "/Users/oleeriksen/Data/Files/uploads";
     // here files will be stored
+
+    public FileController(IFileRepo repo)
+    {
+        mRepo = repo;
+    }
 
     // provide fileupload - the file is copied to the PATH and given
     // a unique filename with the same extension as the uploaded file. 
@@ -20,41 +26,26 @@ public class FileController : ControllerBase
         if (file == null || file.Length == 0)
             return BadRequest("Ingen fil modtaget");
 
-        // ensure the folder is there
-        if (!Directory.Exists(PATH))
-            Directory.CreateDirectory(PATH);
-
-        // compute a unique new filename
-        var fileName = UniqueFilename() + Path.GetExtension(file.FileName);
-        var path = Path.Combine(PATH, fileName);
-        
-        await using var stream = new FileStream(path, FileMode.Create);
-        await file.CopyToAsync(stream);
-
+        var fileName = await mRepo.AddFile(file);
         return Ok(fileName);
     }
-
-    // return a unique filename - uses the Tick property from DateTime
-    private string UniqueFilename()
-    {
-        DateTime now = DateTime.Now;
-        return now.Ticks.ToString();
-    }
+    
 
     // Return the file with name [fileName]. This is regarded as a key for the
     // file
     [HttpGet]
     [Route("{fileName}")]
-    public IActionResult GetFileByKey(string fileName)
+    public async Task<IActionResult> GetFileByKey(string fileName)
     {
-        var filePath = Path.Combine(PATH, fileName);
 
-        if (!System.IO.File.Exists(filePath))
-            return NotFound();
+        var res = await mRepo.GetFileContent(fileName);
+        if (res.success)
+        {
+            var mimeType = GetMimeType(res.path); // see below
 
-        var mimeType = GetMimeType(filePath); // see below
-
-        return PhysicalFile(filePath, mimeType);
+            return PhysicalFile(res.path, mimeType);
+        }
+        return NotFound();
     }
 
     private string GetMimeType(string filePath)
@@ -73,14 +64,7 @@ public class FileController : ControllerBase
     [Route("getall")]
     public List<string> GetAll()
     {
-        List<string> res = new();
-        DirectoryInfo folder = new DirectoryInfo(PATH);
-        foreach (var f in folder.EnumerateFiles())
-        {
-            if (! f.Name.StartsWith('.')) // hidden files
-                    res.Add(f.Name);
-        }
-        return res;
+        return mRepo.GetAllFilenames();
     }
     
     // Return the file with name [fileName]. This is regarded as a key for the
@@ -89,12 +73,9 @@ public class FileController : ControllerBase
     [Route("{fileName}")]
     public IActionResult DeleteFileByKey(string fileName)
     {
-        var filePath = Path.Combine(PATH, fileName);
-
-        if (!System.IO.File.Exists(filePath))
+        var result = mRepo.DeleteFile(fileName);
+        if (!result)
             return NotFound();
-
-        System.IO.File.Delete(filePath);
         return Ok();
     }
 }
