@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ServerApp.Repositories;
 
 namespace ServerApp.Controllers;
 
@@ -7,8 +8,12 @@ namespace ServerApp.Controllers;
 public class FileController : ControllerBase
 {
 
-    private string PATH = "/Users/oleeriksen/Data/Files/uploads";
-    // here files will be stored
+    private FileRepository mFileRep;
+
+    public FileController(FileRepository fileRep)
+    {
+        mFileRep = fileRep;
+    }
 
     // provide fileupload - the file is copied to the PATH and given
     // a unique filename with the same extension as the uploaded file. 
@@ -16,85 +21,46 @@ public class FileController : ControllerBase
     [Route("upload")]
     public async Task<IActionResult> Upload(IFormFile? file)
     {
-        // if no or empty file - return bad request
         if (file == null || file.Length == 0)
-            return BadRequest("Ingen fil modtaget");
+            return BadRequest("No file uploaded.");
 
-        // ensure the folder is there
-        if (!Directory.Exists(PATH))
-            Directory.CreateDirectory(PATH);
-
-        // compute a unique new filename
-        var fileName = UniqueFilename() + Path.GetExtension(file.FileName);
-        var path = Path.Combine(PATH, fileName);
-        
-        await using var stream = new FileStream(path, FileMode.Create);
-        await file.CopyToAsync(stream);
-
-        return Ok(fileName);
+        var url = await mFileRep.UploadAsync(file);
+        return Ok(new { url });
     }
-
-    // return a unique filename - uses the Tick property from DateTime
-    private string UniqueFilename()
+    
+    
+    [HttpGet("download/{blobName}")]
+    public async Task<IActionResult> GetByBlobName(string blobName)
     {
-        DateTime now = DateTime.Now;
-        return now.Ticks.ToString();
-    }
+        var result = await mFileRep.GetBlobStreamAsync(blobName);
 
-    // Return the file with name [fileName]. This is regarded as a key for the
-    // file
-    [HttpGet]
-    [Route("{fileName}")]
-    public IActionResult GetFileByKey(string fileName)
-    {
-        var filePath = Path.Combine(PATH, fileName);
-
-        if (!System.IO.File.Exists(filePath))
+        if (result is null)
             return NotFound();
 
-        var mimeType = GetMimeType(filePath); // see below
+        var (stream, contentType, fileName) = result.Value;
 
-        return PhysicalFile(filePath, mimeType);
+        // File(...) will take care of streaming the response
+        return File(stream, contentType, fileName);
     }
-
-    private string GetMimeType(string filePath)
-    {
-        var provider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
-        if (!provider.TryGetContentType(filePath, out var contentType))
-        {
-            // set type of content to unknown...
-            contentType = "application/octet-stream";
-        }
-        return contentType;
-    }
+    
 
     // Return a list af filenames for all the visible files in the PATH folder. 
     [HttpGet]
     [Route("getall")]
-    public List<string> GetAll()
+    public async Task<List<string>> GetAll()
     {
-        List<string> res = new();
-        DirectoryInfo folder = new DirectoryInfo(PATH);
-        foreach (var f in folder.EnumerateFiles())
-        {
-            if (! f.Name.StartsWith('.')) // hidden files
-                    res.Add(f.Name);
-        }
+        var res = await mFileRep.GetAll();
         return res;
     }
     
-    // Return the file with name [fileName]. This is regarded as a key for the
-    // file
-    [HttpDelete]
-    [Route("{fileName}")]
-    public IActionResult DeleteFileByKey(string fileName)
+    [HttpDelete("delete/{blobName}")]
+    public async Task<IActionResult> Delete(string blobName)
     {
-        var filePath = Path.Combine(PATH, fileName);
+        var deleted = await mFileRep.DeleteBlobAsync(blobName);
 
-        if (!System.IO.File.Exists(filePath))
-            return NotFound();
+        if (!deleted)
+            return NotFound(new { message = "Blob not found." });
 
-        System.IO.File.Delete(filePath);
-        return Ok();
+        return Ok(new { message = "Blob deleted successfully." });
     }
 }
