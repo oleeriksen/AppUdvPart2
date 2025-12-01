@@ -26,6 +26,11 @@ else
         viewedWords = wordsFromFile.Take(100).ToArray();
     }
 
+    protected override void OnInitialized()
+    {
+        viewedWords = new string[200];
+    }
+
     private async Task<string[]> LoadAllWords()
     {
         string content = await Http.GetStringAsync("sample-data/words.txt");
