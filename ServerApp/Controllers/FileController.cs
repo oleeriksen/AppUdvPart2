@@ -8,9 +8,9 @@ namespace ServerApp.Controllers;
 public class FileController : ControllerBase
 {
 
-    private FileRepository mFileRep;
+    private IFileRepository mFileRep;
 
-    public FileController(FileRepository fileRep)
+    public FileController(IFileRepository fileRep)
     {
         mFileRep = fileRep;
     }
@@ -32,15 +32,15 @@ public class FileController : ControllerBase
     [HttpGet("download/{blobName}")]
     public async Task<IActionResult> GetByBlobName(string blobName)
     {
-        var result = await mFileRep.GetBlobStreamAsync(blobName);
+        var result = await mFileRep.GetStreamAsync(blobName);
 
         if (result is null)
             return NotFound();
 
-        var (stream, contentType, fileName) = result.Value;
+        var (stream, contentType) = result.Value;
 
         // File(...) will take care of streaming the response
-        return File(stream, contentType, fileName);
+        return File(stream, contentType);
     }
     
 
@@ -49,14 +49,14 @@ public class FileController : ControllerBase
     [Route("getall")]
     public async Task<List<string>> GetAll()
     {
-        var res = await mFileRep.GetAll();
+        var res = await mFileRep.GetAllAsync();
         return res;
     }
     
     [HttpDelete("delete/{blobName}")]
     public async Task<IActionResult> Delete(string blobName)
     {
-        var deleted = await mFileRep.DeleteBlobAsync(blobName);
+        var deleted = await mFileRep.DeleteAsync(blobName);
 
         if (!deleted)
             return NotFound(new { message = "Blob not found." });

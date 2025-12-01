@@ -9,6 +9,6 @@ public class PingController : ControllerBase
     [HttpGet]
     public string Ping()
     {
-        return "ServerApp - version 1.0 - 2025-11-17";
+        return "ServerApp - version 1.1 - 2025-12-01";
     }
 }

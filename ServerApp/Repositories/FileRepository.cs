@@ -3,7 +3,7 @@ using Azure.Storage.Blobs.Models;
 namespace ServerApp.Repositories;
 using Azure.Storage.Blobs;
 
-public class FileRepository
+public class FileRepository : IFileRepository
 {
     private readonly BlobContainerClient _container;
 
@@ -15,18 +15,18 @@ public class FileRepository
         _container.CreateIfNotExists();
     }
 
-    public async Task<string> UploadAsync(IFormFile file, CancellationToken ct = default)
+    public async Task<string> UploadAsync(IFormFile file)
     {
         var blobName = $"{Guid.NewGuid()}_{file.FileName}";
         var blobClient = _container.GetBlobClient(blobName);
 
         using var stream = file.OpenReadStream();
-        await blobClient.UploadAsync(stream, overwrite: false, cancellationToken: ct);
+        await blobClient.UploadAsync(stream, overwrite: false);
 
-        return blobClient.Uri.ToString(); // store this URL in DB if needed
+        return blobName;
     }
 
-    public async Task<List<string>> GetAll()
+    public async Task<List<string>> GetAllAsync()
     {
         List<string> blobNames = new();
 
@@ -40,33 +40,31 @@ public class FileRepository
         return blobNames;
     }
     
-    public async Task<(Stream Stream, string ContentType, string FileName)?> GetBlobStreamAsync(
-        string blobName,
-        CancellationToken ct = default)
+    public async Task<(Stream Stream, string ContentType)?> GetStreamAsync(
+        string blobName)
     {
         var blobClient = _container.GetBlobClient(blobName);
 
-        if (!await blobClient.ExistsAsync(ct))
+        if (!await blobClient.ExistsAsync())
             return null;
 
         // Get properties for content type / metadata
-        BlobProperties props = await blobClient.GetPropertiesAsync(cancellationToken: ct);
+        BlobProperties props = await blobClient.GetPropertiesAsync();
 
-        var stream = await blobClient.OpenReadAsync(cancellationToken: ct);
+        var stream = await blobClient.OpenReadAsync();
         var contentType = props.ContentType ?? "application/octet-stream";
-        var fileName = blobClient.Name; // or use metadata
 
-        return (stream, contentType, fileName);
+        return (stream, contentType);
     }
     
-    public async Task<bool> DeleteBlobAsync(string blobName, CancellationToken ct = default)
+
+    public async Task<bool> DeleteAsync(string blobName)
     {
         var blobClient = _container.GetBlobClient(blobName);
 
         // DeleteIfExistsAsync returns true/false
         var result = await blobClient.DeleteIfExistsAsync(
-            Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots,
-            cancellationToken: ct);
+            Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots);
 
         return result.Value; // true if deleted, false if blob didn’t exist
     }
