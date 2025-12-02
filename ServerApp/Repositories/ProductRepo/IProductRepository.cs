@@ -1,4 +1,4 @@
-namespace ServerApp.Repositories;
+namespace ServerApp.Repositories.ProductRepo;
 using Core;
 
 public interface IProductRepository

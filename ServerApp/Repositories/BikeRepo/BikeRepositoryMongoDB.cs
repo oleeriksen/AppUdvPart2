@@ -1,7 +1,7 @@
 using Core;
 using MongoDB.Driver;
 
-namespace ServerApp.Repositories;
+namespace ServerApp.Repositories.BikeRepo;
 
 public class BikeRepositoryMongoDB :IBikeRepository
 {

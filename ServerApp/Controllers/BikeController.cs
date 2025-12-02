@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ServerApp.Repositories;
+using ServerApp.Repositories.BikeRepo;
 using Core;
 
 namespace ServerApp.Controllers

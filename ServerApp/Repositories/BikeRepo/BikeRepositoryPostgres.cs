@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 using Core;
 using Npgsql;
 
-namespace ServerApp.Repositories
+namespace ServerApp.Repositories.BikeRepo
 {
     public class BikeRepositoryPostgres : IBikeRepository
     {

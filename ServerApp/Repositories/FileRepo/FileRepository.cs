@@ -1,7 +1,8 @@
 using Azure.Storage.Blobs.Models;
-
-namespace ServerApp.Repositories;
 using Azure.Storage.Blobs;
+
+namespace ServerApp.Repositories.FileRepo;
+
 
 public class FileRepository : IFileRepository
 {

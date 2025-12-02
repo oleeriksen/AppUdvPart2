@@ -1,4 +1,7 @@
 using ServerApp.Repositories;
+using ServerApp.Repositories.BikeRepo;
+using ServerApp.Repositories.FileRepo;
+using ServerApp.Repositories.ProductRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 

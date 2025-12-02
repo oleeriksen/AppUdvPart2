@@ -1,6 +1,6 @@
 ﻿using System;
 using Core;
-namespace ServerApp.Repositories
+namespace ServerApp.Repositories.BikeRepo
 {
 	public interface IBikeRepository
 	{

@@ -1,6 +1,6 @@
 using Core;
 
-namespace ServerApp.Repositories;
+namespace ServerApp.Repositories.ProductRepo;
 
 public class ProductRepositoryMock : IProductRepository
 {

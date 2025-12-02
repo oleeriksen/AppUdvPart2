@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using Microsoft.Data.Sqlite;
 using Core;
 
-namespace ServerApp.Repositories;
+namespace ServerApp.Repositories.BikeRepo;
 
 public class BikeRepositorySQLite : IBikeRepository
 {

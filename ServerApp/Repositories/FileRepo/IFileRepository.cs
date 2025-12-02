@@ -1,4 +1,4 @@
-namespace ServerApp.Repositories;
+namespace ServerApp.Repositories.FileRepo;
 
 public interface IFileRepository
 {
