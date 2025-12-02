@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddSingleton<IBikeRepository, BikeRepositorySQLite>();
 builder.Services.AddSingleton<IProductRepository, ProductRepositoryMongoDB>();
-builder.Services.AddSingleton<IFileRepository, FileRepository>();
+builder.Services.AddSingleton<IFileRepository, PhysicalFileRepository>();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
