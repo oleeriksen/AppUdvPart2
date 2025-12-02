@@ -15,7 +15,7 @@ public class FileController : ControllerBase
         mFileRep = fileRep;
     }
 
-    // provide fileupload - the file is copied to the PATH and given
+    // provide fileupload - the file is added to the repo and given
     // a unique filename with the same extension as the uploaded file. 
     [HttpPost]
     [Route("upload")]
@@ -29,10 +29,12 @@ public class FileController : ControllerBase
     }
     
     
-    [HttpGet("download/{blobName}")]
-    public async Task<IActionResult> GetByBlobName(string blobName)
+    // provide download of a specific file in the repo - it will
+    // return a stream and a type of content
+    [HttpGet("download/{filename}")]
+    public async Task<IActionResult> GetByName(string filename)
     {
-        var result = await mFileRep.GetStreamAsync(blobName);
+        var result = await mFileRep.GetStreamAsync(filename);
 
         if (result is null)
             return NotFound();
@@ -44,7 +46,7 @@ public class FileController : ControllerBase
     }
     
 
-    // Return a list af filenames for all the visible files in the PATH folder. 
+    // Return a list of names for all files in the repo. 
     [HttpGet]
     [Route("getall")]
     public async Task<List<string>> GetAll()
