@@ -4,11 +4,11 @@ using Azure.Storage.Blobs;
 namespace ServerApp.Repositories.FileRepo;
 
 
-public class FileRepository : IFileRepository
+public class AzureStorageFileRepository : IFileRepository
 {
     private readonly BlobContainerClient _container;
 
-    public FileRepository(IConfiguration config)
+    public AzureStorageFileRepository(IConfiguration config)
     {
         var connStr = config["AzureStorage:ConnectionString"];
         var containerName = config["AzureStorage:ContainerName"];
@@ -41,8 +41,7 @@ public class FileRepository : IFileRepository
         return blobNames;
     }
     
-    public async Task<(Stream Stream, string ContentType)?> GetStreamAsync(
-        string blobName)
+    public async Task<(Stream Stream, string ContentType)?> GetStreamAsync(string blobName)
     {
         var blobClient = _container.GetBlobClient(blobName);
 
@@ -64,8 +63,7 @@ public class FileRepository : IFileRepository
         var blobClient = _container.GetBlobClient(blobName);
 
         // DeleteIfExistsAsync returns true/false
-        var result = await blobClient.DeleteIfExistsAsync(
-            Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots);
+        var result = await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
         return result.Value; // true if deleted, false if blob didn’t exist
     }
