@@ -2,8 +2,8 @@ namespace ServerApp.Repositories.FileRepo;
 
 public interface IFileRepository
 {
-    // repesent a repo of files. When a file is added, it is given a unique name
-    // to retreive the content of a file in the repo, you must provide its name.
+    // represent a repo of files. When a file is added, it is given a unique name
+    // to retrieve the content of a file in the repo, you must provide its name.
     
     
     // will add [file] to the repo - return the unique name it is given
