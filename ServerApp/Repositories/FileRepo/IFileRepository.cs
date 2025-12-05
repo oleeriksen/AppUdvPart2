@@ -7,7 +7,8 @@ public interface IFileRepository
     
     
     // will add [file] to the repo - return the unique name it is given
-   Task<string> UploadAsync(IFormFile file);
+   Task<string> AddAsync(IFormFile file);
+   
    // Get all names of files in the repo
    Task<List<string>> GetAllAsync();
 

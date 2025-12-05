@@ -20,7 +20,7 @@ public class FileService : IFileService
         using var content = new MultipartFormDataContent();
         content.Add(new StreamContent(s), "file", filename);
 
-        var response = await http.PostAsync($"{Server.Url}/files/upload", content);
+        var response = await http.PostAsync($"{Server.Url}/files/add", content);
         
         // the response contains the key created by the webservice in case of success.
         // that key must be used when getting the file from the API.

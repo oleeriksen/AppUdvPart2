@@ -5,7 +5,7 @@ public class PhysicalFileRepository : IFileRepository
     private string PATH = "/Users/oleeriksen/Data/Files/uploads";
     // here files will be stored
     
-    public async Task<string> UploadAsync(IFormFile file)
+    public async Task<string> AddAsync(IFormFile file)
     {
         // ensure the folder is there
         if (!Directory.Exists(PATH))

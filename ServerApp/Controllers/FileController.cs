@@ -18,13 +18,13 @@ public class FileController : ControllerBase
     // provide fileupload - the file is added to the repo and given
     // a unique filename with the same extension as the uploaded file. 
     [HttpPost]
-    [Route("upload")]
-    public async Task<IActionResult> Upload(IFormFile? file)
+    [Route("add")]
+    public async Task<IActionResult> Add(IFormFile? file)
     {
         if (file == null || file.Length == 0)
             return BadRequest("No file uploaded.");
 
-        var url = await mFileRep.UploadAsync(file);
+        var url = await mFileRep.AddAsync(file);
         return Ok(new { url });
     }
     

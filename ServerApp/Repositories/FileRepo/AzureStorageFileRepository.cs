@@ -16,7 +16,7 @@ public class AzureStorageFileRepository : IFileRepository
         _container.CreateIfNotExists();
     }
 
-    public async Task<string> UploadAsync(IFormFile file)
+    public async Task<string> AddAsync(IFormFile file)
     {
         var blobName = $"{Guid.NewGuid()}_{file.FileName}";
         var blobClient = _container.GetBlobClient(blobName);
