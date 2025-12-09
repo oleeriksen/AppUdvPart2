@@ -1,5 +1,6 @@
 ﻿@page "/weather"
 @inject HttpClient Http
+@using ClientApp.Service
 @using Core
 
 <PageTitle>Weather</PageTitle>
@@ -54,7 +55,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("http://localhost:5217/api/vejr/16/18");
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>($"{Server.Url}/vejr/16/18");
     }
 
     private string TextOnButton => FVises? "Skjul F-Heit": "Vis F-heit";
